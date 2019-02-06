@@ -3,7 +3,7 @@
 if [ -z "$1" ]
 then
     echo
-    echo 'Issue a wildcard SSL certificate with Fishdrowned ROOT CA'
+    echo 'Issue a wildcard SSL certificate with datatransfer ROOT CA'
     echo
     echo 'Usage: ./gen.cert.sh <domain> [<domain2>] [<domain3>] [<domain4>] ...'
     echo '    <domain>          The domain name of your site, like "example.dev",'
@@ -39,7 +39,7 @@ openssl req -new -out "${DIR}/$1.csr.pem" \
     -reqexts SAN \
     -config <(cat ca.cnf \
         <(printf "[SAN]\nsubjectAltName=${SAN}")) \
-    -subj "/C=CN/ST=Guangdong/L=Guangzhou/O=Fishdrowned/OU=$1/CN=*.$1"
+    -subj "/C=CN/ST=Guangdong/L=Guangzhou/O=datatransfer/OU=$1/CN=*.$1"
 
 # Issue certificate
 # openssl ca -batch -config ./ca.cnf -notext -in "${DIR}/$1.csr.pem" -out "${DIR}/$1.cert.pem"
@@ -63,3 +63,8 @@ echo "Certificates are located in:"
 LS=$([[ `ls --help | grep '\-\-color'` ]] && echo "ls --color" || echo "ls -G")
 
 ${LS} -la `pwd`/${BASE_DIR}/*.*
+
+echo "== Apache configure =="
+echo "SSLCertificateFile out/v0.co/20190205-2325/abc.com.bundle.crt"
+echo "SSLCertificateKeyFile out/cert.key.pem"
+echo "SSLCertificateChainFile out/root.crt"
